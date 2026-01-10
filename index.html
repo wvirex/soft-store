@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOFTSTORE — Каталог программного обеспечения</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #020204 0%, #080312 50%, #020204 100%);
+            min-height: 100vh;
+        }
+
+        .glow-purple {
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
+        }
+
+        .card-glow:hover {
+            box-shadow: 0 0 40px rgba(139, 92, 246, 0.4), 0 0 80px rgba(139, 92, 246, 0.2);
+        }
+
+        .glassmorphism {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .verified-badge {
+            opacity: 0;
+            transform: translateY(5px);
+            transition: all 0.3s ease;
+        }
+
+        .buy-btn-wrapper:hover .verified-badge {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .btn-glow {
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .btn-glow:hover {
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.8), 0 0 60px rgba(139, 92, 246, 0.4);
+        }
+
+        .product-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px) scale(1.02);
+        }
+
+        .product-card:hover .product-icon {
+            filter: brightness(1.3);
+            transform: scale(1.1);
+        }
+
+        .product-icon {
+            box-shadow: 0 0 0 rgba(139, 92, 246, 0);
+            transition: all 0.4s ease;
+        }
+
+        .product-card:hover .product-icon {
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.3), 0 0 30px rgba(139, 92, 246, 0.15);
+        }
+
+        .product-card:hover .buy-btn {
+            background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+        }
+
+        .modal-backdrop {
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(12px);
+        }
+
+        .neon-text {
+            text-shadow: 0 0 10px rgba(139, 92, 246, 0.8), 0 0 20px rgba(139, 92, 246, 0.5);
+        }
+
+        .scroll-hidden::-webkit-scrollbar {
+            display: none;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .category-btn.active {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+        }
+    </style>
+</head>
+<body class="text-white scroll-hidden">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 glassmorphism">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <a href="#" class="text-2xl font-bold tracking-tight">
+                <span class="text-white">SOFT</span><span class="text-purple-500 neon-text">STORE</span>
+            </a>
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="#catalog" class="text-gray-400 hover:text-white transition-colors">Каталог</a>
+                <a href="#" class="text-gray-400 hover:text-white transition-colors">О нас</a>
+                <a href="https://t.me/wvirex" target="_blank" class="text-gray-400 hover:text-purple-400 transition-colors flex items-center gap-1.5">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+                    Поддержка
+                </a>
+            </nav>
+            <button class="md:hidden text-white">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="pt-32 pb-16 px-6">
+        <div class="max-w-7xl mx-auto text-center">
+            <h1 class="text-4xl md:text-6xl font-bold mb-6">
+                <span class="text-white">Soft</span><span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600 neon-text">Store</span>
+            </h1>
+            <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-10">
+                Лучшие программы по лучшим ценам
+            </p>
+        </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="px-6 mb-12">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-wrap gap-3 justify-center">
+                <button onclick="filterCategory('all')" class="category-btn active px-6 py-2.5 rounded-full glassmorphism text-sm font-medium transition-all hover:bg-purple-600/20">
+                    Все программы
+                </button>
+                <button onclick="filterCategory('graphics')" class="category-btn px-6 py-2.5 rounded-full glassmorphism text-sm font-medium transition-all hover:bg-purple-600/20">
+                    Графика
+                </button>
+                <button onclick="filterCategory('office')" class="category-btn px-6 py-2.5 rounded-full glassmorphism text-sm font-medium transition-all hover:bg-purple-600/20">
+                    Офис
+                </button>
+                <button onclick="filterCategory('video')" class="category-btn px-6 py-2.5 rounded-full glassmorphism text-sm font-medium transition-all hover:bg-purple-600/20">
+                    Видеомонтаж
+                </button>
+                <button onclick="filterCategory('utilities')" class="category-btn px-6 py-2.5 rounded-full glassmorphism text-sm font-medium transition-all hover:bg-purple-600/20">
+                    Утилиты
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Catalog -->
+    <section id="catalog" class="px-6 pb-20">
+        <div class="max-w-7xl mx-auto">
+            <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Products will be inserted here by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal -->
+    <div id="product-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 modal-backdrop overflow-y-auto">
+        <div class="glassmorphism rounded-3xl max-w-4xl w-full my-8 relative glow-purple">
+            <button onclick="closeModal()" class="absolute top-6 right-6 text-gray-400 hover:text-white transition-colors z-10">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+            <div id="modal-content" class="p-8 md:p-12">
+                <!-- Modal content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="glassmorphism py-8 px-6">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="text-2xl font-bold">
+                <span class="text-white">SOFT</span><span class="text-purple-500">STORE</span>
+            </div>
+            <p class="text-gray-500 text-sm">© 2026 SOFTSTORE. Все права защищены.</p>
+            <a href="https://t.me/wvirex" target="_blank" class="text-gray-400 hover:text-purple-400 transition-colors flex items-center gap-2">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+                @wvirex
+            </a>
+        </div>
+    </footer>
+
+    <script>
+        const AVITO_LINK = "https://www.avito.ru/moskva/igry_pristavki_i_programmy/microsoft_office_2016_7863218438";
+
+        const products = [
+            {
+                id: 1,
+                name: "Adobe Photoshop 2025",
+                developer: "Adobe",
+                price: 199,
+                category: "graphics",
+                icon: "🎨",
+                color: "#31A8FF",
+                description: "Профессиональный редактор растровой графики. Идеально подходит для ретуши фотографий, создания дизайнов, цифровой живописи и работы с композициями.",
+                version: "26.0.0",
+                platform: "Windows 10/11",
+                features: "Ретушь, фильтры, слои, маски, AI-инструменты",
+                installation: "Автоматическая (15 мин)",
+                manual: "PDF + видеоуроки"
+            },
+            {
+                id: 2,
+                name: "Adobe Illustrator 2025",
+                developer: "Adobe",
+                price: 199,
+                category: "graphics",
+                icon: "✏️",
+                color: "#FF9A00",
+                description: "Векторный графический редактор для создания логотипов, иконок, иллюстраций и масштабируемой графики любой сложности.",
+                version: "29.0.0",
+                platform: "Windows 10/11",
+                features: "Векторы, кривые, градиенты, паттерны",
+                installation: "Автоматическая (12 мин)",
+                manual: "PDF + видеоуроки"
+            },
+            {
+                id: 3,
+                name: "Microsoft Office 2024",
+                developer: "Microsoft",
+                price: 299,
+                category: "office",
+                icon: "📊",
+                color: "#D83B01",
+                description: "Полный офисный пакет включающий Word, Excel, PowerPoint, Outlook и другие приложения для работы с документами.",
+                version: "2024 LTSC",
+                platform: "Windows 10/11",
+                features: "Word, Excel, PowerPoint, Outlook, OneNote",
+                installation: "Автоматическая (20 мин)",
+                manual: "Встроенная справка"
+            },
+            {
+                id: 4,
+                name: "DaVinci Resolve Studio",
+                developer: "Blackmagic Design",
+                price: 199,
+                category: "video",
+                icon: "🎬",
+                color: "#FF5733",
+                description: "Профессиональное решение для монтажа, цветокоррекции, визуальных эффектов и постпродакшена видео.",
+                version: "19.0",
+                platform: "Windows 10/11",
+                features: "Монтаж, цветокоррекция, VFX, звук",
+                installation: "Автоматическая (25 мин)",
+                manual: "PDF (1500+ страниц)"
+            },
+            {
+                id: 5,
+                name: "Adobe Premiere Pro 2025",
+                developer: "Adobe",
+                price: 199,
+                category: "video",
+                icon: "🎥",
+                color: "#9999FF",
+                description: "Ведущая программа для видеомонтажа, используемая профессионалами по всему миру для создания фильмов и контента.",
+                version: "25.0.0",
+                platform: "Windows 10/11",
+                features: "Монтаж, переходы, эффекты, экспорт",
+                installation: "Автоматическая (18 мин)",
+                manual: "PDF + видеоуроки"
+            },
+            {
+                id: 6,
+                name: "CCleaner Professional",
+                developer: "Piriform",
+                price: 199,
+                category: "utilities",
+                icon: "🧹",
+                color: "#6C5CE7",
+                description: "Утилита для очистки системы, удаления временных файлов, оптимизации реестра и ускорения работы компьютера.",
+                version: "6.20",
+                platform: "Windows 10/11",
+                features: "Очистка, оптимизация, автозагрузка",
+                installation: "Быстрая (2 мин)",
+                manual: "Встроенная справка"
+            },
+            {
+                id: 7,
+                name: "CorelDRAW Graphics Suite",
+                developer: "Corel",
+                price: 199,
+                category: "graphics",
+                icon: "🖌️",
+                color: "#00A651",
+                description: "Профессиональный пакет для векторной иллюстрации, вёрстки и редактирования фотографий.",
+                version: "2024",
+                platform: "Windows 10/11",
+                features: "Векторы, вёрстка, обработка фото",
+                installation: "Автоматическая (15 мин)",
+                manual: "PDF + онлайн-курсы"
+            },
+            {
+                id: 8,
+                name: "WinRAR",
+                developer: "RARLAB",
+                price: 199,
+                category: "utilities",
+                icon: "📦",
+                color: "#0066FF",
+                description: "Мощный архиватор с поддержкой множества форматов, шифрования и создания многотомных архивов.",
+                version: "7.0",
+                platform: "Windows 10/11",
+                features: "Сжатие, шифрование, разбивка",
+                installation: "Быстрая (1 мин)",
+                manual: "Встроенная справка"
+            },
+            {
+                id: 9,
+                name: "Notion Desktop",
+                developer: "Notion Labs",
+                price: 199,
+                category: "office",
+                icon: "📝",
+                color: "#000000",
+                description: "Универсальное рабочее пространство для заметок, баз данных, канбан-досок и управления проектами.",
+                version: "3.5.0",
+                platform: "Windows 10/11",
+                features: "Заметки, базы данных, интеграции",
+                installation: "Быстрая (3 мин)",
+                manual: "Онлайн-документация"
+            },
+            {
+                id: 10,
+                name: "Final Cut Pro",
+                developer: "Apple",
+                price: 199,
+                category: "video",
+                icon: "🎞️",
+                color: "#555555",
+                description: "Профессиональный видеоредактор с мощными инструментами для монтажа, организации медиа и постобработки.",
+                version: "11.0",
+                platform: "Windows 10/11 (эмуляция)",
+                features: "Магнитная шкала, эффекты, 360°",
+                installation: "Автоматическая (20 мин)",
+                manual: "PDF + видеокурсы"
+            },
+            {
+                id: 11,
+                name: "Malwarebytes Premium",
+                developer: "Malwarebytes",
+                price: 199,
+                category: "utilities",
+                icon: "🛡️",
+                color: "#0052CC",
+                description: "Продвинутая защита от вредоносного ПО, программ-вымогателей и онлайн-угроз в реальном времени.",
+                version: "5.1",
+                platform: "Windows 10/11",
+                features: "Антивирус, защита в реальном времени",
+                installation: "Быстрая (5 мин)",
+                manual: "Онлайн-база знаний"
+            },
+            {
+                id: 12,
+                name: "Affinity Photo 2",
+                developer: "Serif",
+                price: 199,
+                category: "graphics",
+                icon: "📸",
+                color: "#7E3FF2",
+                description: "Мощный редактор фотографий профессионального уровня без подписки. Отличная альтернатива Photoshop.",
+                version: "2.4.0",
+                platform: "Windows 10/11",
+                features: "RAW, HDR, ретушь, композиции",
+                installation: "Автоматическая (8 мин)",
+                manual: "PDF + видеоуроки"
+            }
+        ];
+
+        let currentCategory = 'all';
+
+        function formatPrice(price) {
+            return price.toLocaleString('ru-RU') + ' ₽';
+        }
+
+        function createProductCard(product) {
+            return `
+                <div class="product-card glassmorphism rounded-2xl p-6 cursor-pointer" 
+                     data-category="${product.category}" 
+                     onclick="openModal(${product.id})">
+                    <div class="flex items-center justify-center w-16 h-16 rounded-2xl mb-5 product-icon text-4xl"
+                         style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(139, 92, 246, 0.3));">
+                        ${product.icon}
+                    </div>
+                    <h3 class="text-lg font-semibold mb-1 text-white">${product.name}</h3>
+                    <p class="text-gray-500 text-sm mb-4">${product.developer}</p>
+                    <div class="flex items-center justify-between mt-auto">
+                        <span class="text-xl font-bold text-white">${formatPrice(product.price)}</span>
+                        <a href="${AVITO_LINK}" target="_blank" onclick="event.stopPropagation()" class="buy-btn px-4 py-2 bg-purple-600/80 hover:bg-purple-600 rounded-xl text-sm font-medium transition-all">
+                            Купить
+                        </a>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderProducts() {
+            const grid = document.getElementById('products-grid');
+            const filteredProducts = currentCategory === 'all' 
+                ? products 
+                : products.filter(p => p.category === currentCategory);
+            
+            grid.innerHTML = filteredProducts.map(createProductCard).join('');
+        }
+
+        function filterCategory(category) {
+            currentCategory = category;
+            
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            renderProducts();
+        }
+
+        function openModal(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const modal = document.getElementById('product-modal');
+            const content = document.getElementById('modal-content');
+
+            content.innerHTML = `
+                <div class="grid md:grid-cols-2 gap-8 md:gap-12">
+                    <div class="flex items-center justify-center">
+                        <div class="w-48 h-48 md:w-64 md:h-64 rounded-3xl flex items-center justify-center text-8xl md:text-9xl float-animation"
+                             style="background: linear-gradient(135deg, ${product.color}22, ${product.color}44); box-shadow: 0 0 60px ${product.color}33;">
+                            ${product.icon}
+                        </div>
+                    </div>
+                    <div class="flex flex-col">
+                        <h2 class="text-2xl md:text-3xl font-bold mb-2">${product.name}</h2>
+                        <p class="text-gray-400 mb-4">${product.developer}</p>
+                        <p class="text-3xl md:text-4xl font-bold text-purple-400 neon-text mb-6">${formatPrice(product.price)}</p>
+                        
+                        <div class="flex gap-3 mb-3">
+                            <div class="flex-1 buy-btn-wrapper relative">
+                                <a href="${AVITO_LINK}" target="_blank" class="block w-full py-3 px-6 bg-gradient-to-r from-purple-600 to-purple-700 rounded-xl font-semibold btn-glow hover:from-purple-500 hover:to-purple-600 transition-all text-center">
+                                    Купить
+                                </a>
+                                <div class="verified-badge absolute -bottom-6 left-0 right-0 flex items-center justify-center gap-1.5 text-xs text-emerald-400 font-medium">
+                                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                    </svg>
+                                    Продавец проверен
+                                </div>
+                            </div>
+                            <button onclick="closeModal()" class="py-3 px-6 glassmorphism rounded-xl font-medium hover:bg-white/10 transition-all">
+                                Назад
+                            </button>
+                        </div>
+                        <div class="h-5 mb-3"></div>
+
+                        <div class="glassmorphism rounded-2xl p-5 mb-6">
+                            <h3 class="text-lg font-semibold mb-3 text-purple-400">Описание</h3>
+                            <p class="text-gray-300 text-sm leading-relaxed">${product.description}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glassmorphism rounded-2xl p-6 mt-4">
+                    <h3 class="text-lg font-semibold mb-5 text-purple-400">Характеристики</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                        <div class="text-center p-4 rounded-xl bg-white/5">
+                            <p class="text-gray-500 text-xs mb-1">Версия</p>
+                            <p class="text-white font-medium text-sm">${product.version}</p>
+                        </div>
+                        <div class="text-center p-4 rounded-xl bg-white/5">
+                            <p class="text-gray-500 text-xs mb-1">Платформа</p>
+                            <p class="text-white font-medium text-sm">${product.platform}</p>
+                        </div>
+                        <div class="text-center p-4 rounded-xl bg-white/5 col-span-2 md:col-span-1">
+                            <p class="text-gray-500 text-xs mb-1">Функции</p>
+                            <p class="text-white font-medium text-sm">${product.features}</p>
+                        </div>
+                        <div class="text-center p-4 rounded-xl bg-white/5">
+                            <p class="text-gray-500 text-xs mb-1">Установка</p>
+                            <p class="text-white font-medium text-sm">${product.installation}</p>
+                        </div>
+                        <div class="text-center p-4 rounded-xl bg-white/5">
+                            <p class="text-gray-500 text-xs mb-1">Инструкция</p>
+                            <p class="text-white font-medium text-sm">${product.manual}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('product-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = '';
+        }
+
+        // Close modal on backdrop click
+        document.getElementById('product-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'product-modal') {
+                closeModal();
+            }
+        });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Initialize
+        renderProducts();
+    </script>
+</body>
+</html>
