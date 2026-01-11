@@ -122,21 +122,6 @@
         .category-btn {
             transition: background 0.2s ease;
         }
-
-        /* Icon image support */
-        .icon-fallback {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            color: rgba(255,255,255,0.8);
-        }
-
-        /* Reduce heavy paint during hover */
-        @media (prefers-reduced-motion: reduce) {
-            .product-card { animation: none !important; }
-            .float-animation { animation: none !important; }
-        }
     </style>
 </head>
 <body class="text-white scroll-hidden">
@@ -413,40 +398,14 @@
             return price.toLocaleString('ru-RU') + ' ₽';
         }
 
-        function isImageIcon(iconValue) {
-            if (!iconValue) return false;
-            const v = String(iconValue).trim().toLowerCase();
-            if (v.startsWith('<img')) return true;
-            if (v.startsWith('http://') || v.startsWith('https://')) return true;
-            if (v.startsWith('images/') || v.startsWith('./') || v.startsWith('../')) return true;
-            return /\.(png|jpe?g|webp|gif|svg)(\?.*)?$/.test(v);
-        }
-
-        function renderIcon(product, variant = 'card') {
-            const iconValue = product.icon;
-            if (!isImageIcon(iconValue)) {
-                // Emoji / text icon
-                return `<span class="${variant === 'modal' ? 'text-8xl md:text-9xl' : 'text-4xl'}">${iconValue}</span>`;
-            }
-
-            // If someone put a whole <img ...> into icon field, keep it, but enforce sizing via wrapper
-            if (String(iconValue).trim().toLowerCase().startsWith('<img')) {
-                return `<span class="block ${variant === 'modal' ? 'w-40 h-40 md:w-48 md:h-48' : 'w-10 h-10'}">${iconValue}</span>`;
-            }
-
-            const src = String(iconValue).trim();
-            const sizeClass = variant === 'modal' ? 'w-40 h-40 md:w-48 md:h-48' : 'w-10 h-10';
-            return `<img src="${src}" alt="${product.name}" loading="lazy" class="${sizeClass} object-contain select-none pointer-events-none" onerror="this.style.display='none'; this.parentElement.classList.add('icon-fallback'); this.parentElement.innerHTML='⚠️';" />`;
-        }
-
         function createProductCard(product) {
             return `
                 <div class="product-card glassmorphism rounded-2xl p-6 cursor-pointer" 
                      data-category="${product.category}" 
                      onclick="openModal(${product.id})">
-                    <div class="flex items-center justify-center w-16 h-16 rounded-2xl mb-5 product-icon"
-                         style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.12), rgba(139, 92, 246, 0.22));">
-                        ${renderIcon(product, 'card')}
+                    <div class="flex items-center justify-center w-16 h-16 rounded-2xl mb-5 product-icon text-4xl"
+                         style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(139, 92, 246, 0.3));">
+                        ${product.icon}
                     </div>
                     <h3 class="text-lg font-semibold mb-1 text-white">${product.name}</h3>
                     <p class="text-gray-500 text-sm mb-4">${product.developer}</p>
@@ -490,9 +449,9 @@
             content.innerHTML = `
                 <div class="grid md:grid-cols-2 gap-8 md:gap-12">
                     <div class="flex items-center justify-center">
-                        <div class="w-48 h-48 md:w-64 md:h-64 rounded-3xl flex items-center justify-center float-animation"
-                             style="background: linear-gradient(135deg, ${product.color}12, ${product.color}24); box-shadow: 0 0 40px ${product.color}22;">
-                            ${renderIcon(product, 'modal')}
+                        <div class="w-48 h-48 md:w-64 md:h-64 rounded-3xl flex items-center justify-center text-8xl md:text-9xl float-animation"
+                             style="background: linear-gradient(135deg, ${product.color}22, ${product.color}44); box-shadow: 0 0 60px ${product.color}33;">
+                            ${product.icon}
                         </div>
                     </div>
                     <div class="flex flex-col">
